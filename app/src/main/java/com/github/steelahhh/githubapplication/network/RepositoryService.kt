@@ -5,6 +5,7 @@ import com.github.steelahhh.githubapplication.model.UserProfile
 import com.github.steelahhh.githubapplication.model.UserRepo
 import io.reactivex.Single
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -39,7 +40,11 @@ class RepositoryService {
   }
 
   private fun createService(): RepositoryAPI {
+    val loggingInterceptor = HttpLoggingInterceptor()
+    loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+
     val httpClient = OkHttpClient.Builder()
+        .addInterceptor(loggingInterceptor)
         .connectTimeout(3L, TimeUnit.SECONDS)
         .readTimeout(3L, TimeUnit.SECONDS)
         .build()

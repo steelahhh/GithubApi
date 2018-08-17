@@ -10,6 +10,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
+import java.util.*
 
 class UserViewModel : ViewModel() {
   // normally this would be constructor injected
@@ -36,7 +37,11 @@ class UserViewModel : ViewModel() {
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe({
-          userRepos.postValue(DataState.SUCCESS(it))
+          // sort repos by stars count, and assign an ID for them (for FastAdapter lib)
+          userRepos.postValue(DataState.SUCCESS(it
+              .sortedByDescending { repo -> repo.stargazersCount }
+              .map { repo -> repo.withIdentifier(UUID.randomUUID().hashCode().toLong()) }
+          ))
         }, {
           userRepos.postValue(DataState.FAILURE(it))
         })

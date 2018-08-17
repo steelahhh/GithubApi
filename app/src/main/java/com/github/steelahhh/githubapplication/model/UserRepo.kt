@@ -1,5 +1,11 @@
 package com.github.steelahhh.githubapplication.model
+import android.view.View
+import androidx.appcompat.widget.AppCompatTextView
+import com.bumptech.glide.Glide
+import com.github.steelahhh.githubapplication.R
 import com.google.gson.annotations.SerializedName
+import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.items.AbstractItem
 
 data class UserRepo(
     @SerializedName("id") val id: Int,
@@ -12,7 +18,32 @@ data class UserRepo(
     @SerializedName("url") val url: String,
     @SerializedName("stargazers_count") val stargazersCount: Int,
     @SerializedName("watchers_count") val watchersCount: Int
-)
+): AbstractItem<UserRepo, UserRepo.ViewHolder>() {
+  override fun getType() = R.id.repositoryItem
+
+  override fun getViewHolder(v: View) = ViewHolder(v)
+
+  override fun getLayoutRes() = R.layout.item_repository
+
+  inner class ViewHolder(itemView: View): FastAdapter.ViewHolder<UserRepo>(itemView) {
+    private  val repositoryName = itemView.findViewById<AppCompatTextView>(R.id.repositoryName)
+    private val repositoryDescription = itemView.findViewById<AppCompatTextView>(R.id.repositoryDescription)
+    private val starsCount = itemView.findViewById<AppCompatTextView>(R.id.repositoryStarsCount)
+
+    override fun unbindView(item: UserRepo) {
+      repositoryName.text = null
+      repositoryDescription.text = null
+      starsCount.text = null
+    }
+
+    override fun bindView(item: UserRepo, payloads: MutableList<Any>) {
+      repositoryName.text = item.name
+      repositoryDescription.text = item.description
+      starsCount.text = "${item.stargazersCount}"
+    }
+
+  }
+}
 
 data class Owner(
     @SerializedName("login") val login: String,

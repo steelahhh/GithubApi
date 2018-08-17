@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     intent?.let {
-      //      name = it.getda
+      //      name = it.data
     }
 
     vm.fetchUser(name)
